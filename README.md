@@ -1,0 +1,1 @@
+Before start `main.py`` create `.env` file with redis password. Use `.env_example` as template.
