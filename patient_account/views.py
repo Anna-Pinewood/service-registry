@@ -2,6 +2,7 @@ import logging
 from flask import Blueprint, jsonify
 import requests
 import time
+from patient_account.load_balancing import next_replica
 from utils import get_logger
 
 from consts import URL_SECRET_NUMBER
@@ -45,3 +46,8 @@ def secret_number_handler():
         return jsonify({"secret_number": secret_number})
     else:
         return "Failed to fetch the secret number", 500
+
+@bp.route('/')
+def handler():
+    next_in_pool = next_replica()
+    return next_in_pool.__str__()

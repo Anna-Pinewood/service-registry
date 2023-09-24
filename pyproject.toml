@@ -11,6 +11,7 @@ Flask = "^2.3.3"
 redis = "^5.0.0"
 python-dotenv = "^1.0.0"
 requests = "^2.31.0"
+flask-apscheduler = "^1.13.0"
 
 
 [build-system]
