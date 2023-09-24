@@ -51,3 +51,8 @@ def secret_number_handler():
 def handler():
     next_in_pool = next_replica()
     return next_in_pool.__str__()
+
+
+@bp.route('/register')
+def register_handler():
+    ...

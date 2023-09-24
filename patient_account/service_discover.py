@@ -1,7 +1,10 @@
 from itertools import cycle
 import logging
+import random
 import db_redis
 import load_balancing
+
+from flask import request
 
 
 from utils import get_logger
@@ -34,3 +37,19 @@ def discover(service_name: str):
         load_balancing.replicas_pool = cycle(replicas_pool)
         logger.info('Replicas pool: %s', str(replicas_pool))
     return wrapped_discover
+
+def register(service_name: str):
+    redis_client = db_redis.redis_connection
+    replica_random_number = random.randint(1, 100)
+    replica_name = f"replica_{replica_random_number}"
+    while replica_name in redis_client.lrange(service_name, 0, -1):
+        replica_random_number = random.randint(1, 100)
+        replica_name = f"replica_{replica_random_number}"
+
+    host = request.host.split(':')[0]
+    port = request.host.split(':')[1]
+
+    redis_client.lpush(replica_name)
+    redis_client.hset(replica_name, "host", host)
+    redis_client.hset(replica_name, "port", port)
+    
