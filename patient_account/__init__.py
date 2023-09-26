@@ -1,17 +1,14 @@
-
 import logging
 
-import db_redis
 import redis
 from flask_apscheduler import APScheduler
 
-import service_discover
+import patient_account.db_redis as db_redis
+import patient_account.service_discover as service_discover
 from utils import get_logger
 
-
-logger = get_logger(__name__,
-                    level=logging.INFO,
-                    add_stdout=True)
+logger = get_logger(logger_name="patient_account.__init__",
+                    level=logging.INFO)
 
 
 def init_redis_connection(host: str,
