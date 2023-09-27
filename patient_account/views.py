@@ -4,7 +4,7 @@ import time
 import requests
 from flask import Blueprint, jsonify
 
-import consts
+import patient_account.consts as consts
 from patient_account.load_balancing import next_replica
 from utils import get_logger
 
