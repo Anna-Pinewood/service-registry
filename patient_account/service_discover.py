@@ -1,4 +1,5 @@
 import logging
+import os
 import random
 import socket
 from itertools import cycle
@@ -6,6 +7,7 @@ from itertools import cycle
 from flask import request
 
 import patient_account.db_redis as db_redis
+from patient_account.consts import SERVICE_HOST, SERVICE_PORT
 import patient_account.load_balancing as load_balancing
 from utils import get_logger
 
@@ -55,9 +57,12 @@ def register(service_name: str):
     redis_client.hset(replica_name, "port", port)
 
 
+# def get_host_ip():
+#     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+#     s.connect(('8.8.8.8', 53))
+#     host_ip, host_port = s.getsockname()
+#     s.close()
+#     return host_ip, host_port
+
 def get_host_ip():
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.connect(('8.8.8.8', 53))
-    host_ip, host_port = s.getsockname()
-    s.close()
-    return host_ip, host_port
+    return SERVICE_HOST, SERVICE_PORT

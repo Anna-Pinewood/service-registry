@@ -2,9 +2,10 @@ import logging
 
 from flask import Flask
 
-import consts
-from consts import REDIS_HOST, REDIS_PASSWORD, REDIS_PORT, URL_SECRET_NUMBER
+import patient_account.consts as consts
+from consts import REDIS_HOST, REDIS_PASSWORD, REDIS_PORT
 from patient_account import init_redis_connection, init_scheduler, views
+from patient_account.consts import URL_SECRET_NUMBER
 from patient_account.service_discover import register
 from utils import get_logger
 
@@ -30,5 +31,5 @@ if __name__ == "__main__":
     logger.info('Got secret number %s', secret_number)
     consts.SECRET_NUMBER = secret_number
     if secret_number is not None:
-        app.run()
         register(service_name)
+        app.run(host='0.0.0.0', port=5000)
