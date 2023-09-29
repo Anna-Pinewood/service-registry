@@ -57,6 +57,19 @@ def register(service_name: str):
     redis_client.hset(replica_name, "port", port)
 
 
+def unregister(service_name: str):
+    redis_client = db_redis.redis_connection
+    host, port = get_host_ip()
+    replicas = redis_client.keys('replica_*')
+    for replica in replicas:
+        if redis_client.hget(replica, 'host') != host or redis_client.hget(replica, 'port') != port:
+            continue
+
+        redis_client.delete(replica)
+        redis_client.lrem(service_name, 0, replica)
+        logger.info('Deleted replica %s', replica)
+
+
 # def get_host_ip():
 #     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 #     s.connect(('8.8.8.8', 53))
