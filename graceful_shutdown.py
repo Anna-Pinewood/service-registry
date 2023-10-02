@@ -4,6 +4,7 @@ import sys
 import signal
 import threading
 import time
+from patient_account import db_redis
 from patient_account.consts import SERVICE_NAME
 from patient_account.service_discover import unregister
 
@@ -15,6 +16,8 @@ logger = get_logger(__name__,
 
 def exit_app():
     logger.info('Killing %s in 15 sec...', str(os.getpid()))
+    db_redis.redis_connection.close()
+    logger.info('Connection to redis is closed.')
     time.sleep(15)
     os.kill(os.getpid(), signal.SIGKILL)
 
