@@ -6,7 +6,7 @@ from flask import Flask
 from graceful_shutdown import signal_handler
 
 import patient_account.consts as consts
-from consts import REDIS_HOST, REDIS_PASSWORD, REDIS_PORT
+from consts import REDIS_HOST, REDIS_PASSWORD, REDIS_PORT, ENV_PATH
 from patient_account import init_redis_connection, init_scheduler, views
 from patient_account.consts import SERVICE_NAME, URL_SECRET_NUMBER
 from patient_account.service_discover import register
@@ -22,6 +22,7 @@ signal.signal(signal.SIGTERM, signal_handler)
 signal.signal(signal.SIGINT, signal_handler)
 
 if __name__ == "__main__":
+    print(ENV_PATH)
     init_redis_connection(host=REDIS_HOST,
                           port=REDIS_PORT,
                           password=REDIS_PASSWORD)

@@ -3,7 +3,7 @@ from pathlib import Path
 
 from dotenv import dotenv_values
 
-PROJECT_PATH = Path(__file__).parent.parent
+PROJECT_PATH = Path(__file__).parent.parent.parent
 
 ENV_PATH = PROJECT_PATH / '.env'
 config_env = dotenv_values(ENV_PATH)
