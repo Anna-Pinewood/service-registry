@@ -12,6 +12,7 @@ redis = "^5.0.0"
 python-dotenv = "^1.0.0"
 requests = "^2.31.0"
 flask-apscheduler = "^1.13.0"
+gunicorn = "^21.2.0"
 
 
 [build-system]
