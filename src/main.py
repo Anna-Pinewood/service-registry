@@ -18,7 +18,8 @@ app = Flask(__name__)
 logger = get_logger(__name__,
                     level=logging.INFO)
 
-gi
+signal.signal(signal.SIGTERM, signal_handler)
+signal.signal(signal.SIGINT, signal_handler)
 
 
 def run_app():
