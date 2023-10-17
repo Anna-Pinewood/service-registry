@@ -6,8 +6,6 @@ services:
     depends_on:
       - redis_registry
     container_name: web_app
-    environment:
-      - name=value
     env_file:
       - .env
   redis_registry:
