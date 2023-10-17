@@ -1,4 +1,5 @@
 
+from patient_account.consts import SERVICE_PORT
 import signal
 from graceful_shutdown import signal_handler
 from main import run_app
@@ -9,4 +10,4 @@ workers = 2
 # worker_connections = 100
 threads = 10
 timeout = 10000
-bind = '0.0.0.0:5000'
+bind = f'0.0.0.0:{SERVICE_PORT}'
