@@ -5,7 +5,7 @@ import signal
 from flask import Flask
 from graceful_shutdown import signal_handler
 
-from src.consts import REDIS_HOST, REDIS_PASSWORD, REDIS_PORT
+from consts import REDIS_HOST, REDIS_PASSWORD, REDIS_PORT
 import patient_account.consts as consts
 from patient_account import init_redis_connection, init_scheduler, views
 from patient_account.consts import SERVICE_NAME, URL_SECRET_NUMBER
@@ -44,4 +44,5 @@ def run_app():
 
 
 if __name__ == "__main__":
-    run_app()
+    app = run_app()
+    app.run(host='0.0.0.0', port=5000)
