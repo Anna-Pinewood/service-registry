@@ -32,7 +32,7 @@ def run_app():
     scheduler.start()
 
     app.register_blueprint(views.bp)
-    logger.info(' Getting secret number...')
+    logger.info('Getting secret number...')
     secret_number = views.fetch_secret_number(
         source=URL_SECRET_NUMBER)
     logger.info('Got secret number %s', secret_number)
