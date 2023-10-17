@@ -39,7 +39,6 @@ def run_app():
     consts.SECRET_NUMBER = secret_number
     if secret_number is not None:
         register(service_name=SERVICE_NAME)
-        # app.run(host='0.0.0.0', port=5000)
     return app
 
 
