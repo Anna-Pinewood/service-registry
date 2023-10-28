@@ -8,11 +8,14 @@ services:
       - redis_registry
     env_file:
       - .env
-  redis_registry:
-    image: redis:latest
-    ports:
-      - "6379:6379"
-    command: redis-server --requirepass lolkek123
+    deploy:
+      replicas: 1
+    delay: 30
+  # redis_registry:
+  #   image: redis:latest
+  #   ports:
+  #     - "6379:6379"
+  #   command: redis-server --requirepass lolkek123
 
     
 
