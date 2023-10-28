@@ -7,8 +7,9 @@ variables:
   IMAGE_REGISTRY: 65.108.52.119:5000
   IMAGE_NAME: web_app
   SWARM_MANAGER: 65.108.52.119
+  MY_PROJECT: service-registry
 
-get_secret:
+.prepare-job-get-secret:
   stage: prepare
   image: python:3.9
   rules:
@@ -25,18 +26,14 @@ get_secret:
   artifacts:
       paths:
         - ./secret.txt
-    # - echo "SECRET_NUMBER=$SECRET_NUMBER" >> $CI_ENVIRONMENT_PATH
-  # artifacts:
-  #   reports:
-  #     dotenv: $CI_ENVIRONMENT_PATH
-  # dependencies: []
 
 
 build-job:
   stage: build
   before_script:
-    - cat ./secret.txt
-    - export SECRET_NUMBER=$(cat ./secret.txt | grep -oP '(?<="secret_number":)\d+')
+    - printenv
+    # - export SECRET_NUMBER=$(cat ./secret.txt | grep -oP '(?<="secret_number":)\d+')
+    - cd $MY_PROJECT
     - echo $SECRET_NUMBER
     - 'which ssh-agent || ( apt-get install -qq openssh-client )'
     - eval $(ssh-agent -s)
@@ -46,7 +43,11 @@ build-job:
     - ssh root@$SWARM_MANAGER "ls"
     - echo "Successfuly connected to remote server."
   script:
-    - ssh root@$SWARM_MANAGER "docker image ps"
+    - cd
+    - ssh root@$SWARM_MANAGER "git pull origin $CI_COMMIT_BRANCH"
+    - ssh root@$SWARM_MANAGER 
+    - ssh root@$SWARM_MANAGER "docker image rm $IMAGE_REGISTRY/$IMAGE_NAME"
+    - ssh root@$SWARM_MANAGER "docker pull $IMAGE_REGISTRY/$IMAGE_NAME"
     # - ssh root@SWARM_MANAGER "git pull origin $CI_"
   
 
