@@ -7,7 +7,6 @@ variables:
   IMAGE_REGISTRY: 65.108.52.119:5000
   IMAGE_NAME: web_app
   SWARM_MANAGER: 65.108.52.119
-  SOURCE_BRANCH_LOW: $(echo "$CI_COMMIT_BRANCH" | tr '[:upper:]' '[:lower:]')
 
 get_secret:
   stage: prepare
@@ -18,9 +17,10 @@ get_secret:
     - name: waryak/karpov_courses:secret_ci_service
       alias: waryak
   script:
+    - export SOURCE_BRANCH_LOW=$(echo '$CI_COMMIT_BRANCH' | tr '[:upper:]' '[:lower:]')
     - echo $SOURCE_BRANCH_LOW
     - echo "Using link"
-    - echo 'http://waryak:5000/get_secret_number/${CI_COMMIT_BRANCH}'
+    - echo http://waryak:5000/get_secret_number/${SOURCE_BRANCH_LOW}
     - SECRET_NUMBER=$(curl -s http://waryak:5000/get_secret_number/$CI_COMMIT_BRANCH)
     - echo $SECRET_NUMBER
     - echo "SECRET_NUMBER=$SECRET_NUMBER" >> $CI_ENVIRONMENT_PATH
