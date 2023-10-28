@@ -15,7 +15,8 @@ build-job:
     - mkdir -p ~/.ssh
     - 'echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
     - ssh-add <(echo "$SSH_PRIVATE_KEY" | base64 -d)
-    - echo "Connected to remote server."
+    - ssh-keyscan $SWARM_MANAGER
+    - ssh root@$SWARM_MANAGER "docker image ps"
   script:
     - echo $SWARM_MANAGER
     - ssh root@$SWARM_MANAGER "docker image ps"
