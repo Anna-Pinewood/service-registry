@@ -10,29 +10,37 @@ variables:
 build-job:
   stage: build
   before_script:
+  #   - 'which ssh-agent || ( apt-get install -qq openssh-client )'
+  #   - eval $(ssh-agent -s)
+
+  #   # - echo "${SSH_PRIVATE_KEY_MASKED}" |  tr -d '\r' | base64 --decode
+  #   # - echo "${SSH_PRIVATE_KEY_MASKED}" |  tr -d '\r' | base64 --decode | ssh-add -
+
+  #   - echo "$SSH_PRIVATE_KEY" | ssh-add -
+
+  #   - mkdir -p ~/.ssh
+  #   - chmod 700 ~/.ssh
+
+  #   - ssh-keyscan $SWARM_MANAGER >> ~/.ssh/known_hosts
+  #   - chmod 644 ~/.ssh/known_hosts
+
+  #   - 'echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+
+  #   - ssh root@$SWARM_MANAGER "docker image ps"
+  # script:
+  #   - echo $SWARM_MANAGER
+  #   - ssh root@$SWARM_MANAGER "docker image ps"
+
+  #   # -  ssh root@$SWARM_MANAGER "docker image rm $IMAGE_REGISTRY/$IMAGE_NAME"
+  #   # - ssh root@SWARM_MANAGER
+  
+
     - 'which ssh-agent || ( apt-get install -qq openssh-client )'
     - eval $(ssh-agent -s)
-
-    # - echo "${SSH_PRIVATE_KEY_MASKED}" |  tr -d '\r' | base64 --decode
-    # - echo "${SSH_PRIVATE_KEY_MASKED}" |  tr -d '\r' | base64 --decode | ssh-add -
-
-    - echo "$SSH_PRIVATE_KEY" | ssh-add -
-
     - mkdir -p ~/.ssh
-    - chmod 700 ~/.ssh
-
-    - ssh-keyscan $SWARM_MANAGER >> ~/.ssh/known_hosts
-    - chmod 644 ~/.ssh/known_hosts
-
     - 'echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
-
+    - echo "${SSH_PRIVATE_KEY}" | ssh-add -
     - ssh root@$SWARM_MANAGER "docker image ps"
-  script:
-    - echo $SWARM_MANAGER
-    - ssh root@$SWARM_MANAGER "docker image ps"
-
-    # -  ssh root@$SWARM_MANAGER "docker image rm $IMAGE_REGISTRY/$IMAGE_NAME"
-    # - ssh root@SWARM_MANAGER
 
 deploy-job:      # This job runs in the deploy stage.
   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
