@@ -21,6 +21,10 @@ get_secret:
     - echo http://waryak:5000/get_secret_number/${SOURCE_BRANCH_LOW}
     - SECRET_NUMBER=$(curl -s http://waryak:5000/get_secret_number/${SOURCE_BRANCH_LOW})
     - echo $SECRET_NUMBER
+    - echo $SECRET_NUMBER > ./secret.txt
+  artifacts:
+      paths:
+        - ./secret.txt
     # - echo "SECRET_NUMBER=$SECRET_NUMBER" >> $CI_ENVIRONMENT_PATH
   # artifacts:
   #   reports:
@@ -31,7 +35,8 @@ get_secret:
 build-job:
   stage: build
   before_script:
-    - echo $SECRET_NUMBER
+    - ls
+    - cat ./secret.txt
     - 'which ssh-agent || ( apt-get install -qq openssh-client )'
     - eval $(ssh-agent -s)
     - mkdir -p ~/.ssh
