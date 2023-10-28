@@ -54,12 +54,13 @@ build-job:
     # - ssh root@$SWARM_MANAGER "docker pull $IMAGE_REGISTRY/$IMAGE_NAME"
   
 
-.deploy-job:      # This job runs in the deploy stage.
+deploy-job:      # This job runs in the deploy stage.
   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
   environment: production
   script:
     - export SECRET_NUMBER=$(cat ./secret.txt | grep -oP '(?<="secret_number":)\d+')
     - echo $SECRET_NUMBER
     - export SOURCE_BRANCH_LOW=$(echo $CI_COMMIT_BRANCH | tr '[:upper:]' '[:lower:]')
+    - ssh root@$SWARM_MANAGER "docker pull $IMAGE_REGISTRY/$IMAGE_NAME"
     - ssh root@$SWARM_MANAGER "docker service create -d --replicas 1  --name web_app_6_1_$SOURCE_BRANCH_LOW --publish 5002:5002 -e SERVICE_PORT=5002 -e SECRET_NUMBER=$SECRET_NUMBER $IMAGE_REGISTRY/$IMAGE_NAME"
 
