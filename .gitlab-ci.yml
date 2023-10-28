@@ -10,6 +10,12 @@ variables:
 build-job:
   stage: build
   before_script:
+    - 'which ssh-agent || ( apt-get install -qq openssh-client )'
+    - eval $(ssh-agent -s)
+    - mkdir -p ~/.ssh
+    - 'echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+    - echo "${SSH_PRIVATE_KEY}" | ssh-add -
+    - ssh root@$SWARM_MANAGER "docker image ps"
   #   - 'which ssh-agent || ( apt-get install -qq openssh-client )'
   #   - eval $(ssh-agent -s)
 
@@ -27,20 +33,15 @@ build-job:
   #   - 'echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
 
   #   - ssh root@$SWARM_MANAGER "docker image ps"
-  # script:
-  #   - echo $SWARM_MANAGER
-  #   - ssh root@$SWARM_MANAGER "docker image ps"
+  script:
+    - echo $SWARM_MANAGER
+    - ssh root@$SWARM_MANAGER "docker image ps"
 
-  #   # -  ssh root@$SWARM_MANAGER "docker image rm $IMAGE_REGISTRY/$IMAGE_NAME"
-  #   # - ssh root@SWARM_MANAGER
+    # -  ssh root@$SWARM_MANAGER "docker image rm $IMAGE_REGISTRY/$IMAGE_NAME"
+    # - ssh root@SWARM_MANAGER
   
 
-    - 'which ssh-agent || ( apt-get install -qq openssh-client )'
-    - eval $(ssh-agent -s)
-    - mkdir -p ~/.ssh
-    - 'echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
-    - echo "${SSH_PRIVATE_KEY}" | ssh-add -
-    - ssh root@$SWARM_MANAGER "docker image ps"
+
 
 deploy-job:      # This job runs in the deploy stage.
   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
