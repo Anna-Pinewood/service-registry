@@ -8,6 +8,7 @@ variables:
   IMAGE_NAME: web_app
   SWARM_MANAGER: 65.108.52.119
   MY_PROJECT: service-registry
+  ORIGIN_NAME: gitlab
 
 .prepare-job-get-secret:
   stage: prepare
@@ -44,11 +45,12 @@ build-job:
     - echo "Successfuly connected to remote server."
   script:
     - cd
+    - ssh root@$SWARM_MANAGER "git pull $ORIGIN_NAME $CI_COMMIT_BRANCH"
+    - ssh root@$SWARM_MANAGER "git checkout $CI_COMMIT_BRANCH"
     - ssh root@$SWARM_MANAGER "git pull origin $CI_COMMIT_BRANCH"
-    - ssh root@$SWARM_MANAGER 
-    - ssh root@$SWARM_MANAGER "docker image rm $IMAGE_REGISTRY/$IMAGE_NAME"
-    - ssh root@$SWARM_MANAGER "docker pull $IMAGE_REGISTRY/$IMAGE_NAME"
-    # - ssh root@SWARM_MANAGER "git pull origin $CI_"
+    # - ssh root@$SWARM_MANAGER 
+    # - ssh root@$SWARM_MANAGER "docker image rm $IMAGE_REGISTRY/$IMAGE_NAME"
+    # - ssh root@$SWARM_MANAGER "docker pull $IMAGE_REGISTRY/$IMAGE_NAME"
   
 
 
