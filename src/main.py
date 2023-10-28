@@ -1,4 +1,5 @@
 import logging
+import os
 import signal
 
 
@@ -23,22 +24,23 @@ signal.signal(signal.SIGINT, signal_handler)
 
 
 def run_app():
-    init_redis_connection(host=REDIS_HOST,
-                          port=REDIS_PORT,
-                          password=REDIS_PASSWORD)
-    service_name = "web_app"
-    scheduler = init_scheduler(service_name=service_name)
-    scheduler.init_app(app)
-    scheduler.start()
+    # init_redis_connection(host=REDIS_HOST,
+    #                       port=REDIS_PORT,
+    #                       password=REDIS_PASSWORD)
+    # service_name = "web_app"
+    # scheduler = init_scheduler(service_name=service_name)
+    # scheduler.init_app(app)
+    # scheduler.start()
 
     app.register_blueprint(views.bp)
     logger.info('Getting secret number...')
-    secret_number = views.fetch_secret_number(
-        source=URL_SECRET_NUMBER)
+    # secret_number = views.fetch_secret_number(
+    #     source=URL_SECRET_NUMBER)
+    secret_number = os.environ.get("SECRET_NUMBER")
     logger.info('Got secret number %s', secret_number)
     consts.SECRET_NUMBER = secret_number
-    if secret_number is not None:
-        register(service_name=SERVICE_NAME)
+    # if secret_number is not None:
+    #     register(service_name=SERVICE_NAME)
     return app
 
 
