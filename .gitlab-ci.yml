@@ -7,6 +7,7 @@ variables:
   IMAGE_REGISTRY: 65.108.52.119:5000
   IMAGE_NAME: web_app
   SWARM_MANAGER: 65.108.52.119
+  SOURCE_BRANCH_LOW: $(echo "$CI_COMMIT_BRANCH" | tr '[:upper:]' '[:lower:]')
 
 get_secret:
   stage: prepare
@@ -17,6 +18,8 @@ get_secret:
     - name: waryak/karpov_courses:secret_ci_service
       alias: waryak
   script:
+    - echo "Using link"
+    - echo "http://waryak:5000/get_secret_number/${CI_COMMIT_BRANCH}"
     - SECRET_NUMBER=$(curl -s http://waryak:5000/get_secret_number/$CI_COMMIT_BRANCH)
     - echo $SECRET_NUMBER
     - echo "SECRET_NUMBER=$SECRET_NUMBER" >> $CI_ENVIRONMENT_PATH
@@ -29,6 +32,7 @@ get_secret:
 build-job:
   stage: build
   before_script:
+    - echo $SECRET_NUMBER
     - 'which ssh-agent || ( apt-get install -qq openssh-client )'
     - eval $(ssh-agent -s)
     - mkdir -p ~/.ssh
