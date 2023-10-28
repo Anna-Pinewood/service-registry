@@ -42,6 +42,7 @@ build-job:
     - echo "Successfuly connected to remote server."
   script:
     - ssh root@$SWARM_MANAGER "cd $CI_PROJECT_NAME"
+    - ssh root@$SWARM_MANAGER "pwd"
     - ssh root@$SWARM_MANAGER "git pull $ORIGIN_NAME $CI_COMMIT_BRANCH"
     - ssh root@$SWARM_MANAGER "git checkout $CI_COMMIT_BRANCH"
     - ssh root@$SWARM_MANAGER "git pull origin $CI_COMMIT_BRANCH"
