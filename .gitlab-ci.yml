@@ -35,8 +35,9 @@ get_secret:
 build-job:
   stage: build
   before_script:
-    - ls
     - cat ./secret.txt
+    - export SECRET_NUMBER=$(cat ./secret.txt | grep -oP '(?<="secret_number":)\d+')
+    - echo $SECRET_NUMBER
     - 'which ssh-agent || ( apt-get install -qq openssh-client )'
     - eval $(ssh-agent -s)
     - mkdir -p ~/.ssh
@@ -45,13 +46,13 @@ build-job:
     - ssh root@$SWARM_MANAGER "ls"
     - echo "Successfuly connected to remote server."
   script:
-    - ssh root@$SWARM_MANAGER "docker image rm $IMAGE_REGISTRY/$IMAGE_NAME"
-    - ssh root@SWARM_MANAGER "git pull origin $CI_"
+    - ssh root@$SWARM_MANAGER "docker image ps"
+    # - ssh root@SWARM_MANAGER "git pull origin $CI_"
   
 
 
 
-deploy-job:      # This job runs in the deploy stage.
+.deploy-job:      # This job runs in the deploy stage.
   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
   environment: production
   script:
