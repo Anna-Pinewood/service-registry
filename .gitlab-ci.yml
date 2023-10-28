@@ -21,7 +21,7 @@ get_secret:
     - echo $SOURCE_BRANCH_LOW
     - echo "Using link"
     - echo http://waryak:5000/get_secret_number/${SOURCE_BRANCH_LOW}
-    - SECRET_NUMBER=$(curl -s http://waryak:5000/get_secret_number/$CI_COMMIT_BRANCH)
+    - SECRET_NUMBER=$(curl -s http://waryak:5000/get_secret_number/${SOURCE_BRANCH_LOW})
     - echo $SECRET_NUMBER
     - echo "SECRET_NUMBER=$SECRET_NUMBER" >> $CI_ENVIRONMENT_PATH
   artifacts:
