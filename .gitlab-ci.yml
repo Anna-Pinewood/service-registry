@@ -13,7 +13,7 @@ build-job:
     - 'which ssh-agent || ( apt-get install -qq openssh-client )'
     - eval $(ssh-agent -s)
 
-    - ssh-add <(echo "$SSH_PRIVATE_KEY" | base64 -d)
+    - echo "${SSH_PRIVATE_KEY}" |  tr -d ' ' | base64 --decode | ssh-add -
 
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
