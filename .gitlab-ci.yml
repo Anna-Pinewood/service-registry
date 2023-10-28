@@ -14,13 +14,14 @@ build-job:
     - eval $(ssh-agent -s)
     - mkdir -p ~/.ssh
     - 'echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
-    - echo "${SSH_PRIVATE_KEY}" | ssh-add -
-    - ssh root@$SWARM_MANAGER "docker image ps"
+    # - echo "${SSH_PRIVATE_KEY}" | ssh-add -
+    - echo "${SSH_PRIVATE_KEY_ENCODED}" | base64 --decode | ssh-add -
+    - ssh root@$SWARM_MANAGER "docker image ls"
   #   - 'which ssh-agent || ( apt-get install -qq openssh-client )'
   #   - eval $(ssh-agent -s)
 
-  #   # - echo "${SSH_PRIVATE_KEY_MASKED}" |  tr -d '\r' | base64 --decode
-  #   # - echo "${SSH_PRIVATE_KEY_MASKED}" |  tr -d '\r' | base64 --decode | ssh-add -
+  #   # - echo "${SSH_PRIVATE_KEY_ENCODED}" |  tr -d '\r' | base64 --decode
+  #   # - echo "${SSH_PRIVATE_KEY_ENCODED}" | base64 --decode | ssh-add -
 
   #   - echo "$SSH_PRIVATE_KEY" | ssh-add -
 
@@ -35,7 +36,7 @@ build-job:
   #   - ssh root@$SWARM_MANAGER "docker image ps"
   script:
     - echo $SWARM_MANAGER
-    - ssh root@$SWARM_MANAGER "docker image ps"
+    - ssh root@$SWARM_MANAGER "docker image ls"
 
     # -  ssh root@$SWARM_MANAGER "docker image rm $IMAGE_REGISTRY/$IMAGE_NAME"
     # - ssh root@SWARM_MANAGER
