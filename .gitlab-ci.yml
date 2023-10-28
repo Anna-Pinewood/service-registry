@@ -17,7 +17,7 @@ get_secret:
     - name: waryak/karpov_courses:secret_ci_service
       alias: waryak
   script:
-    - export SOURCE_BRANCH_LOW=$(echo '$CI_COMMIT_BRANCH' | tr '[:upper:]' '[:lower:]')
+    - export SOURCE_BRANCH_LOW=$(echo $CI_COMMIT_BRANCH | tr '[:upper:]' '[:lower:]')
     - echo $SOURCE_BRANCH_LOW
     - echo "Using link"
     - echo http://waryak:5000/get_secret_number/${SOURCE_BRANCH_LOW}
