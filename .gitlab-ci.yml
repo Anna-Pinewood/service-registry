@@ -41,11 +41,8 @@ build-job:
     - ssh root@$SWARM_MANAGER "ls"
     - echo "Successfuly connected to remote server."
   script:
-    - ssh root@$SWARM_MANAGER "echo $CI_PROJECT_NAME"
-    - ssh root@$SWARM_MANAGER "cd $CI_PROJECT_NAME && pwd"
+    - ssh root@$SWARM_MANAGER "cd $CI_PROJECT_NAME && git fetch $ORIGIN_NAME $CI_COMMIT_BRANCH && git checkout $CI_COMMIT_BRANCH"
     - ssh root@$SWARM_MANAGER "cd $CI_PROJECT_NAME && git pull $ORIGIN_NAME $CI_COMMIT_BRANCH"
-    - ssh root@$SWARM_MANAGER "git checkout $CI_COMMIT_BRANCH"
-    - ssh root@$SWARM_MANAGER "git pull origin $CI_COMMIT_BRANCH"
     # - ssh root@$SWARM_MANAGER 
     # - ssh root@$SWARM_MANAGER "docker image rm $IMAGE_REGISTRY/$IMAGE_NAME"
     # - ssh root@$SWARM_MANAGER "docker pull $IMAGE_REGISTRY/$IMAGE_NAME"
