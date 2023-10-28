@@ -12,10 +12,17 @@ build-job:
   before_script:
     - 'which ssh-agent || ( apt-get install -qq openssh-client )'
     - eval $(ssh-agent -s)
-    - mkdir -p ~/.ssh
-    - 'echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+
     - ssh-add <(echo "$SSH_PRIVATE_KEY" | base64 -d)
-    - ssh-keyscan $SWARM_MANAGER
+
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+
+    - ssh-keyscan $SWARM_MANAGER >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+
+    - 'echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+
     - ssh root@$SWARM_MANAGER "docker image ps"
   script:
     - echo $SWARM_MANAGER
