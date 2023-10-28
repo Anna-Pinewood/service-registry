@@ -1,4 +1,5 @@
-stages:          # List of stages for jobs, and their order of execution
+stages:
+  - prepare
   - build
   - deploy
 
@@ -7,6 +8,24 @@ variables:
   IMAGE_NAME: web_app
   SWARM_MANAGER: 65.108.52.119
 
+get_secret:
+  stage: prepare
+  image: python:3.9
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "TEST" || $CI_COMMIT_BRANCH == "PROD"'
+  services:
+    - name: waryak/karpov_courses:secret_ci_service
+      alias: waryak
+  script:
+    - SECRET_NUMBER=$(curl -s http://waryak:5000/get_secret_number/$CI_COMMIT_BRANCH)
+    - echo $SECRET_NUMBER
+    - echo "SECRET_NUMBER=$SECRET_NUMBER" >> $CI_ENVIRONMENT_PATH
+  artifacts:
+    reports:
+      dotenv: $CI_ENVIRONMENT_PATH
+  dependencies: []
+
+
 build-job:
   stage: build
   before_script:
@@ -14,32 +33,12 @@ build-job:
     - eval $(ssh-agent -s)
     - mkdir -p ~/.ssh
     - 'echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
-    # - echo "${SSH_PRIVATE_KEY}" | ssh-add -
     - echo "${SSH_PRIVATE_KEY_ENCODED}" | base64 --decode | ssh-add -
-    - ssh root@$SWARM_MANAGER "docker image ls"
-  #   - 'which ssh-agent || ( apt-get install -qq openssh-client )'
-  #   - eval $(ssh-agent -s)
-
-  #   # - echo "${SSH_PRIVATE_KEY_ENCODED}" |  tr -d '\r' | base64 --decode
-  #   # - echo "${SSH_PRIVATE_KEY_ENCODED}" | base64 --decode | ssh-add -
-
-  #   - echo "$SSH_PRIVATE_KEY" | ssh-add -
-
-  #   - mkdir -p ~/.ssh
-  #   - chmod 700 ~/.ssh
-
-  #   - ssh-keyscan $SWARM_MANAGER >> ~/.ssh/known_hosts
-  #   - chmod 644 ~/.ssh/known_hosts
-
-  #   - 'echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
-
-  #   - ssh root@$SWARM_MANAGER "docker image ps"
+    - ssh root@$SWARM_MANAGER "ls"
+    - echo "Successfuly connected to remote server."
   script:
-    - echo $SWARM_MANAGER
-    - ssh root@$SWARM_MANAGER "docker image ls"
-
-    # -  ssh root@$SWARM_MANAGER "docker image rm $IMAGE_REGISTRY/$IMAGE_NAME"
-    # - ssh root@SWARM_MANAGER
+    - ssh root@$SWARM_MANAGER "docker image rm $IMAGE_REGISTRY/$IMAGE_NAME"
+    - ssh root@SWARM_MANAGER "git pull origin $CI_"
   
 
 
