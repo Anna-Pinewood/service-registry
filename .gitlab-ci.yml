@@ -9,7 +9,7 @@ variables:
   SWARM_MANAGER: 65.108.52.119
   ORIGIN_NAME: gitlab
 
-.prepare-job-get-secret:
+prepare-job-get-secret:
   stage: prepare
   image: python:3.9
   rules:
@@ -30,9 +30,9 @@ variables:
 
 build-job:
   stage: build
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "TEST" || $CI_COMMIT_BRANCH == "PROD"'
   before_script:
-    # - export SECRET_NUMBER=$(cat ./secret.txt | grep -oP '(?<="secret_number":)\d+')
-    - echo $SECRET_NUMBER
     - 'which ssh-agent || ( apt-get install -qq openssh-client )'
     - eval $(ssh-agent -s)
     - mkdir -p ~/.ssh
@@ -47,17 +47,19 @@ build-job:
                                 docker image rm $IMAGE_REGISTRY/$IMAGE_NAME ;
                                 docker build -t $IMAGE_NAME . &&
                                 docker tag  $IMAGE_NAME  $IMAGE_REGISTRY/$IMAGE_NAME &&
-                                docker push $IMAGE_REGISTRY/$IMAGE_NAME"
+                                docker push $IMAGE_REGISTRY/$IMAGE_NAME &&
+                                docker pull $IMAGE_REGISTRY/$IMAGE_NAME"
     # - ssh root@$SWARM_MANAGER 
     # - ssh root@$SWARM_MANAGER "docker image rm $IMAGE_REGISTRY/$IMAGE_NAME"
     # - ssh root@$SWARM_MANAGER "docker pull $IMAGE_REGISTRY/$IMAGE_NAME"
   
 
-
-
 .deploy-job:      # This job runs in the deploy stage.
   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
   environment: production
   script:
-    - echo "Deploying application..."
-    - echo "Application successfully deployed."
+    - export SECRET_NUMBER=$(cat ./secret.txt | grep -oP '(?<="secret_number":)\d+')
+    - echo $SECRET_NUMBER
+    - export SOURCE_BRANCH_LOW=$(echo $CI_COMMIT_BRANCH | tr '[:upper:]' '[:lower:]')
+    - ssh root@$SWARM_MANAGER "docker service create -d --replicas 1  --name web_app_6_1_$SOURCE_BRANCH_LOW --publish 5002:5002 -e SERVICE_PORT=5002 -e SECRET_NUMBER=$SECRET_NUMBER $IMAGE_REGISTRY/$IMAGE_NAME"
+
