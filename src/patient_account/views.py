@@ -29,7 +29,7 @@ def fetch_secret_number(source: str):
                 secret_number = response.json().get('secret_number', None)
                 return secret_number
         except requests.RequestException:
-            pass  # Проигнорировать исключение и повторить попытку
+            pass
 
         logger.info('Attempt %s: %s', str(i), response.text)
         time.sleep(retry_delay)
@@ -39,6 +39,7 @@ def fetch_secret_number(source: str):
 
 @bp.route('/return_secret_number')
 def secret_number_handler():
+    time.sleep(1)
     secret_number = consts.SECRET_NUMBER
     logger.info('secret number = %s', str(secret_number))
     if secret_number is not None:

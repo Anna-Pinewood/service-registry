@@ -8,6 +8,9 @@ services:
       - redis_registry
     env_file:
       - .env
+    deploy:
+      replicas: 3
+    delay: 30
   redis_registry:
     image: redis:latest
     ports:

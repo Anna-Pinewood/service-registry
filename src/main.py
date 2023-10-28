@@ -23,9 +23,9 @@ signal.signal(signal.SIGINT, signal_handler)
 
 
 def run_app():
-    init_redis_connection(host=REDIS_HOST,
-                          port=REDIS_PORT,
-                          password=REDIS_PASSWORD)
+    # init_redis_connection(host=REDIS_HOST,
+    #                       port=REDIS_PORT,
+    #                       password=REDIS_PASSWORD)
     service_name = "web_app"
     scheduler = init_scheduler(service_name=service_name)
     scheduler.init_app(app)
@@ -37,8 +37,8 @@ def run_app():
         source=URL_SECRET_NUMBER)
     logger.info('Got secret number %s', secret_number)
     consts.SECRET_NUMBER = secret_number
-    if secret_number is not None:
-        register(service_name=SERVICE_NAME)
+    # if secret_number is not None:
+    #     register(service_name=SERVICE_NAME)
     return app
 
 
