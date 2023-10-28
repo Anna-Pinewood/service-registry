@@ -43,10 +43,10 @@ build-job:
   script:
     - ssh root@$SWARM_MANAGER "cd $CI_PROJECT_NAME && git fetch $ORIGIN_NAME $CI_COMMIT_BRANCH && git checkout $CI_COMMIT_BRANCH"
     - ssh root@$SWARM_MANAGER "cd $CI_PROJECT_NAME && git pull $ORIGIN_NAME $CI_COMMIT_BRANCH"
-    - ssh root@$SWARM_MANAGER " cd $CI_PROJECT_NAME && \
-                                docker image rm $IMAGE_REGISTRY/$IMAGE_NAME ; \
-                                docker build -t $IMAGE_NAME . && \
-                                docker tag  $IMAGE_NAME  $IMAGE_REGISTRY/$IMAGE_NAME && \
+    - ssh root@$SWARM_MANAGER " cd $CI_PROJECT_NAME &&
+                                docker image rm $IMAGE_REGISTRY/$IMAGE_NAME ;
+                                docker build -t $IMAGE_NAME . &&
+                                docker tag  $IMAGE_NAME  $IMAGE_REGISTRY/$IMAGE_NAME &&
                                 docker push $IMAGE_REGISTRY/$IMAGE_NAME"
     # - ssh root@$SWARM_MANAGER 
     # - ssh root@$SWARM_MANAGER "docker image rm $IMAGE_REGISTRY/$IMAGE_NAME"
