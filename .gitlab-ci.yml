@@ -17,6 +17,7 @@ prepare-job-get-secret:
   services:
     - name: waryak/karpov_courses:secret_ci_service
       alias: waryak
+  before_script: []
   script:
     - export SOURCE_BRANCH_LOW=$(echo $CI_COMMIT_BRANCH | tr '[:upper:]' '[:lower:]')
     - echo http://waryak:5000/get_secret_number/${SOURCE_BRANCH_LOW}
@@ -28,18 +29,20 @@ prepare-job-get-secret:
         - ./secret.txt
 
 
+before_script:
+  - 'which ssh-agent || ( apt-get install -qq openssh-client )'
+  - eval $(ssh-agent -s)
+  - mkdir -p ~/.ssh
+  - 'echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+  - echo "${SSH_PRIVATE_KEY_ENCODED}" | base64 --decode | ssh-add -
+  - ssh root@$SWARM_MANAGER "ls"
+  - echo "Successfuly connected to remote server."
+
 build-job:
   stage: build
   rules:
     - if: '$CI_COMMIT_BRANCH == "TEST" || $CI_COMMIT_BRANCH == "PROD"'
-  before_script:
-    - 'which ssh-agent || ( apt-get install -qq openssh-client )'
-    - eval $(ssh-agent -s)
-    - mkdir -p ~/.ssh
-    - 'echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
-    - echo "${SSH_PRIVATE_KEY_ENCODED}" | base64 --decode | ssh-add -
-    - ssh root@$SWARM_MANAGER "ls"
-    - echo "Successfuly connected to remote server."
+
   script:
     - ssh root@$SWARM_MANAGER "cd $CI_PROJECT_NAME && git fetch $ORIGIN_NAME $CI_COMMIT_BRANCH && git checkout $CI_COMMIT_BRANCH"
     - ssh root@$SWARM_MANAGER "cd $CI_PROJECT_NAME && git pull $ORIGIN_NAME $CI_COMMIT_BRANCH"
