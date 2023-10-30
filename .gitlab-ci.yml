@@ -50,8 +50,7 @@ build-job:
                                 docker image rm $IMAGE_REGISTRY/$IMAGE_NAME ;
                                 docker build -t $IMAGE_NAME . &&
                                 docker tag  $IMAGE_NAME  $IMAGE_REGISTRY/$IMAGE_NAME &&
-                                docker push $IMAGE_REGISTRY/$IMAGE_NAME &&
-                                docker pull $IMAGE_REGISTRY/$IMAGE_NAME"
+                                docker push $IMAGE_REGISTRY/$IMAGE_NAME"
   
 
 deploy-job:
