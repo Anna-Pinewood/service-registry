@@ -55,6 +55,9 @@ build-job:
 
 deploy-job:
   stage: deploy
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "TEST" || $CI_COMMIT_BRANCH == "PROD"'
+
   environment: production
   script:
     - export SECRET_NUMBER=$(cat ./secret.txt | grep -oP '(?<="secret_number":)\d+')
