@@ -50,12 +50,14 @@ build-job:
                                 docker image rm $IMAGE_REGISTRY/$IMAGE_NAME ;
                                 docker build -t $IMAGE_NAME . &&
                                 docker tag  $IMAGE_NAME  $IMAGE_REGISTRY/$IMAGE_NAME &&
-                                docker push $IMAGE_REGISTRY/$IMAGE_NAME &&
-                                docker pull $IMAGE_REGISTRY/$IMAGE_NAME"
+                                docker push $IMAGE_REGISTRY/$IMAGE_NAME"
   
 
 deploy-job:
   stage: deploy
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "TEST" || $CI_COMMIT_BRANCH == "PROD"'
+
   environment: production
   script:
     - export SECRET_NUMBER=$(cat ./secret.txt | grep -oP '(?<="secret_number":)\d+')
