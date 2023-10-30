@@ -49,13 +49,10 @@ build-job:
                                 docker tag  $IMAGE_NAME  $IMAGE_REGISTRY/$IMAGE_NAME &&
                                 docker push $IMAGE_REGISTRY/$IMAGE_NAME &&
                                 docker pull $IMAGE_REGISTRY/$IMAGE_NAME"
-    # - ssh root@$SWARM_MANAGER 
-    # - ssh root@$SWARM_MANAGER "docker image rm $IMAGE_REGISTRY/$IMAGE_NAME"
-    # - ssh root@$SWARM_MANAGER "docker pull $IMAGE_REGISTRY/$IMAGE_NAME"
   
 
-deploy-job:      # This job runs in the deploy stage.
-  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
+deploy-job:
+  stage: deploy
   environment: production
   script:
     - export SECRET_NUMBER=$(cat ./secret.txt | grep -oP '(?<="secret_number":)\d+')
